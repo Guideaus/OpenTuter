@@ -35,10 +35,16 @@ PLUGINS = [
 
 API_PROVIDERS = {
     "OpenAI": "https://api.openai.com/v1",
+    "Azure OpenAI": "https://{resource}.openai.azure.com/openai/deployments/{deployment}/chat/completions",
     "Anthropic Claude": "https://api.anthropic.com",
     "Google Gemini": "https://generativelanguage.googleapis.com",
-    "Ollama (Local)": "http://localhost:11434/v1",
-    "Custom": "",
+    "Alibaba Qwen": "https://dashscope.aliyuncs.com/api/v1",
+    "Baidu ERNIE": "https://qianfan.baidubce.com/v2",
+    "Zhipu GLM": "https://open.bigmodel.cn/api/paas/v4",
+    "ByteDance Doubao": "https://ark.cn-beijing.volces.com/api/v3",
+    "Meta Llama (Ollama)": "http://localhost:11434/v1",
+    "Local Ollama Model": "http://localhost:11434/v1",
+    "Custom API Endpoint": "",
 }
 
 def config_complete():

@@ -49,9 +49,10 @@
 
 <script>
 document.getElementById('provider').addEventListener('change', function() {
-  const custom = { 'Custom': '', 'Ollama (Local)': 'http://localhost:11434/v1' };
-  const url = custom[this.value];
-  if (url !== undefined) document.getElementById('base_url').value = url;
+  const urls = {{ providers | tojson }};
+  if (this.value && urls[this.value] !== undefined) {
+    document.getElementById('base_url').value = urls[this.value];
+  }
 });
 
 async function save() {
