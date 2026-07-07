@@ -4,6 +4,8 @@ import time
 import base64
 import threading
 from io import BytesIO
+from PIL import Image
+import mss
 import pyautogui
 from openai import OpenAI
 from pynput import keyboard as pynput_kb
@@ -42,10 +44,17 @@ class AbortController:
             self._listener.stop()
             self._listener = None
 
-def capture_screen_base64():
-    img = pyautogui.screenshot()
+def capture_screen_base64(scale=1.0, fmt="PNG", quality=85):
+    with mss.MSS() as sct:
+        monitor = sct.monitors[1]
+        raw = sct.grab(monitor)
+        img = Image.frombytes("RGB", raw.size, raw.rgb)
+    if scale < 1.0:
+        w = int(img.width * scale)
+        h = int(img.height * scale)
+        img = img.resize((w, h), Image.LANCZOS)
     buf = BytesIO()
-    img.save(buf, format="PNG")
+    img.save(buf, format=fmt, quality=quality)
     return base64.b64encode(buf.getvalue()).decode()
 
 def build_tool_descriptions(tools):
