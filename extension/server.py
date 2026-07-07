@@ -52,7 +52,13 @@ def config_complete():
         with open("config.json", "r", encoding="utf-8") as f:
             d = json.load(f)
         llm = d["llm"]
-        return all(llm.get(k, "").strip() for k in ["api_key", "base_url", "model"])
+        if not llm.get("base_url", "").strip() or not llm.get("model", "").strip():
+            return False
+        api_key = llm.get("api_key", "").strip()
+        if api_key:
+            return True
+        is_local = any(h in llm.get("base_url", "") for h in ("localhost", "127.0.0.1"))
+        return is_local
     except:
         return False
 
@@ -130,7 +136,7 @@ def api_save_config():
     if not provider and not base_url:
         return jsonify({"error": "Provider or base URL required"}), 400
 
-    if provider and provider in API_PROVIDERS:
+    if not base_url and provider and provider in API_PROVIDERS:
         base_url = API_PROVIDERS[provider]
     if not base_url:
         return jsonify({"error": "Base URL required"}), 400
