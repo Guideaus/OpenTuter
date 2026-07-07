@@ -1,0 +1,175 @@
+{
+    "tools": [
+        {
+            "name": "mouse_goto",
+            "description": "Move mouse cursor to specified screen pixel coordinate.",
+            "parameters": {
+                "type": "object",
+                "required": ["x", "y"],
+                "properties": {
+                    "x": {
+                        "type": "integer",
+                        "description": "Horizontal pixel X"
+                    },
+                    "y": {
+                        "type": "integer",
+                        "description": "Vertical pixel Y"
+                    }
+                }
+            }
+        },
+        {
+            "name": "mouse_left_click",
+            "description": "Single left click at current mouse position.",
+            "parameters": {
+                "type": "object",
+                "properties": {}
+            }
+        },
+        {
+            "name": "mouse_right_click",
+            "description": "Single right click at current mouse position to pop context menu.",
+            "parameters": {
+                "type": "object",
+                "properties": {}
+            }
+        },
+        {
+            "name": "mouse_middle_click",
+            "description": "Single middle wheel click at current mouse position.",
+            "parameters": {
+                "type": "object",
+                "properties": {}
+            }
+        },
+        {
+            "name": "mouse_left_click_at",
+            "description": "Move mouse to target coordinate then left click once.",
+            "parameters": {
+                "type": "object",
+                "required": ["x", "y"],
+                "properties": {
+                    "x": {"type": "integer"},
+                    "y": {"type": "integer"}
+                }
+            }
+        },
+        {
+            "name": "mouse_right_click_at",
+            "description": "Move mouse to target coordinate then right click once.",
+            "parameters": {
+                "type": "object",
+                "required": ["x", "y"],
+                "properties": {
+                    "x": {"type": "integer"},
+                    "y": {"type": "integer"}
+                }
+            }
+        },
+        {
+            "name": "mouse_middle_click_at",
+            "description": "Move mouse to target coordinate then middle click once.",
+            "parameters": {
+                "type": "object",
+                "required": ["x", "y"],
+                "properties": {
+                    "x": {"type": "integer"},
+                    "y": {"type": "integer"}
+                }
+            }
+        },
+        {
+            "name": "mouse_double_left_click",
+            "description": "Double left click at current mouse position.",
+            "parameters": {
+                "type": "object",
+                "properties": {}
+            }
+        },
+        {
+            "name": "mouse_double_left_click_at",
+            "description": "Move to coordinate then double left click.",
+            "parameters": {
+                "type": "object",
+                "required": ["x", "y"],
+                "properties": {
+                    "x": {"type": "integer"},
+                    "y": {"type": "integer"}
+                }
+            }
+        },
+        {
+            "name": "mouse_press",
+            "description": "Hold down specified mouse button without releasing.",
+            "parameters": {
+                "type": "object",
+                "required": ["button"],
+                "properties": {
+                    "button": {
+                        "type": "string",
+                        "enum": ["left", "right", "middle"],
+                        "description": "Button to press and hold"
+                    }
+                }
+            }
+        },
+        {
+            "name": "mouse_release",
+            "description": "Release the held mouse button.",
+            "parameters": {
+                "type": "object",
+                "required": ["button"],
+                "properties": {
+                    "button": {
+                        "type": "string",
+                        "enum": ["left", "right", "middle"]
+                    }
+                }
+            }
+        },
+        {
+            "name": "mouse_drag",
+            "description": "Press left button, drag from start point to end point then release.",
+            "parameters": {
+                "type": "object",
+                "required": ["start_x", "start_y", "end_x", "end_y"],
+                "properties": {
+                    "start_x": {"type": "integer"},
+                    "start_y": {"type": "integer"},
+                    "end_x": {"type": "integer"},
+                    "end_y": {"type": "integer"}
+                }
+            }
+        },
+        {
+            "name": "mouse_scroll",
+            "description": "Scroll mouse wheel. Negative delta = scroll up, positive delta = scroll down.",
+            "parameters": {
+                "type": "object",
+                "required": ["delta"],
+                "properties": {
+                    "delta": {
+                        "type": "integer",
+                        "description": "Scroll step count"
+                    }
+                }
+            }
+        },
+        {
+            "name": "mouse_hover",
+            "description": "Move mouse to coordinate and stay hover for a period of time.",
+            "parameters": {
+                "type": "object",
+                "required": ["x", "y", "delay_ms"],
+                "properties": {
+                    "x": {"type": "integer"},
+                    "y": {"type": "integer"},
+                    "delay_ms": {
+                        "type": "integer",
+                        "description": "Hover milliseconds"
+                    }
+                }
+            }
+        }
+    ]
+}

@@ -1,0 +1,200 @@
+{
+    "tools": [
+        {
+            "name": "key_type",
+            "description": "Input a continuous string of text at the current cursor position.",
+            "parameters": {
+                "type": "object",
+                "required": ["text"],
+                "properties": {
+                    "text": {
+                        "type": "string",
+                        "description": "The plain text content to type"
+                    }
+                }
+            }
+        },
+        {
+            "name": "key_press",
+            "description": "Press and hold a single keyboard key without releasing it.",
+            "parameters": {
+                "type": "object",
+                "required": ["key"],
+                "properties": {
+                    "key": {
+                        "type": "string",
+                        "description": "Single key name: shift, ctrl, alt, win, enter, space, backspace, tab, up, down, left, right, escape, f1-f12 etc."
+                    }
+                }
+            }
+        },
+        {
+            "name": "key_release",
+            "description": "Release a previously held keyboard key.",
+            "parameters": {
+                "type": "object",
+                "required": ["key"],
+                "properties": {
+                    "key": {
+                        "type": "string",
+                        "description": "Single key name to release"
+                    }
+                }
+            }
+        },
+        {
+            "name": "key_tap",
+            "description": "Tap a single key once (press and release immediately).",
+            "parameters": {
+                "type": "object",
+                "required": ["key"],
+                "properties": {
+                    "key": {
+                        "type": "string",
+                        "description": "Single key to tap, e.g. enter, space, delete, esc"
+                    }
+                }
+            }
+        },
+        {
+            "name": "key_hotkey",
+            "description": "Execute shortcut combination keys, pass multiple keys separated by comma.",
+            "parameters": {
+                "type": "object",
+                "required": ["keys"],
+                "properties": {
+                    "keys": {
+                        "type": "string",
+                        "description": "Combination keys, example: ctrl,c / ctrl,shift,s / win,d"
+                    }
+                }
+            }
+        },
+        {
+            "name": "key_backspace",
+            "description": "Tap backspace key to delete one character forward.",
+            "parameters": {
+                "type": "object",
+                "properties": {}
+            }
+        },
+        {
+            "name": "key_delete",
+            "description": "Tap delete key to erase character after cursor.",
+            "parameters": {
+                "type": "object",
+                "properties": {}
+            }
+        },
+        {
+            "name": "key_enter",
+            "description": "Press enter key to confirm or new line.",
+            "parameters": {
+                "type": "object",
+                "properties": {}
+            }
+        },
+        {
+            "name": "key_tab",
+            "description": "Tap tab key to switch focus to next input box.",
+            "parameters": {
+                "type": "object",
+                "properties": {}
+            }
+        },
+        {
+            "name": "key_space",
+            "description": "Tap space key to input blank space.",
+            "parameters": {
+                "type": "object",
+                "properties": {}
+            }
+        },
+        {
+            "name": "key_escape",
+            "description": "Tap ESC key to close popups/cancel operations.",
+            "parameters": {
+                "type": "object",
+                "properties": {}
+            }
+        },
+        {
+            "name": "key_arrow_up",
+            "description": "Tap up arrow key to move cursor up.",
+            "parameters": {
+                "type": "object",
+                "properties": {}
+            }
+        },
+        {
+            "name": "key_arrow_down",
+            "description": "Tap down arrow key to move cursor down.",
+            "parameters": {
+                "type": "object",
+                "properties": {}
+            }
+        },
+        {
+            "name": "key_arrow_left",
+            "description": "Tap left arrow key to move cursor left.",
+            "parameters": {
+                "type": "object",
+                "properties": {}
+            }
+        },
+        {
+            "name": "key_arrow_right",
+            "description": "Tap right arrow key to move cursor right.",
+            "parameters": {
+                "type": "object",
+                "properties": {}
+            }
+        },
+        {
+            "name": "key_page_up",
+            "description": "Tap PageUp to scroll view upward.",
+            "parameters": {
+                "type": "object",
+                "properties": {}
+            }
+        },
+        {
+            "name": "key_page_down",
+            "description": "Tap PageDown to scroll view downward.",
+            "parameters": {
+                "type": "object",
+                "properties": {}
+            }
+        },
+        {
+            "name": "key_home",
+            "description": "Jump cursor to the start of current line.",
+            "parameters": {
+                "type": "object",
+                "properties": {}
+            }
+        },
+        {
+            "name": "key_end",
+            "description": "Jump cursor to the end of current line.",
+            "parameters": {
+                "type": "object",
+                "properties": {}
+            }
+        },
+        {
+            "name": "key_wait_input",
+            "description": "Pause for specified milliseconds before next keyboard operation.",
+            "parameters": {
+                "type": "object",
+                "required": ["delay_ms"],
+                "properties": {
+                    "delay_ms": {
+                        "type": "integer",
+                        "description": "Waiting time in milliseconds"
+                    }
+                }
+            }
+        }
+    ]
+}
