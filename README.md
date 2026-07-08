@@ -27,13 +27,42 @@ python main.py
 
 On first run, you'll be guided through API configuration. After that, just type your task.
 
+### Usage
+
+1. **First run** — the OOBE wizard will ask for your API endpoint, model name, and API key
+2. **Give a task** — type your goal in natural language (e.g., "open calculator and compute 15 * 7")
+3. **AI works** — OpenTuter captures a screenshot, the LLM plans actions, executes mouse/keyboard commands, then captures another screenshot to verify
+4. **Done** — the AI signals completion; you can give the next task
+5. **Abort** — press **DEL three times quickly** to interrupt any running operation
+
+### Configuration
+
+Edit `config.json` manually at any time:
+
+```json
+{
+  "api_base": "https://api.openai.com/v1",
+  "model": "gpt-4o",
+  "api_key": "sk-..."
+}
+```
+
+Supports any OpenAI-compatible endpoint:
+- **GPT-4o** — `https://api.openai.com/v1`
+- **Ollama** — `http://localhost:11434/v1` (use any key like `ollama`)
+- **vLLM** — `http://localhost:8000/v1`
+- **Qwen-VL / Claude** — their respective OpenAI-compatible endpoints
+
 ## Project structure
 
 ```
 OpenTuter/
-├── main.py              # Entry point
+├── main.py              # Entry point (launches gui.main())
 ├── core.py              # Engine: LLM calls, command execution, screen capture, abort
-├── gui.py               # Interaction loop, OOBE wizard
+├── gui.py               # Terminal interaction loop
+├── config.json          # LLM configuration (api_base, model, api_key)
+├── res/
+│   └── logo.png         # Logo
 ├── agent/
 │   ├── tools.mouse.json       # Mouse tool definitions for LLM
 │   ├── tools.keyboard.json    # Keyboard tool definitions for LLM
@@ -52,6 +81,7 @@ OpenTuter/
 - pynput
 - questionary
 - Pillow
+- mss
 
 ## Abort
 
