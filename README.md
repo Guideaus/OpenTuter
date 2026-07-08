@@ -1,4 +1,6 @@
-![OpenTuter](res/logo.png)
+<p align="center">
+  <img src="res/logo.png" width="400" alt="OpenTuter">
+</p>
 
 **OpenTuter** — a desktop AI assistant with screen vision. It can connect to any large language model (GPT-4o, Ollama, etc.), "see" the screen through screenshots, and control the mouse/keyboard on its own.
 
