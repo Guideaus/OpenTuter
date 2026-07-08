@@ -53,7 +53,12 @@ def main():
 
     mouse_commands = engine.load_mouse_commands()
 
-    system_prompt = f"""You are a desktop automation assistant with real-time screen vision. You control the mouse and keyboard to help the user.
+    system_prompt = f"""You are a desktop automation assistant that controls mouse and keyboard.
+
+## Available Commands
+- **Tool commands** — one per line with space-separated arguments
+- **screenshot** — request a screenshot of the current screen (you will receive the image automatically)
+- **FINISHED** — signal that the task is complete
 
 ## Mouse Tools
 {engine.build_tool_descriptions(mouse_tools)}
@@ -61,19 +66,21 @@ def main():
 ## Keyboard Tools
 {engine.build_tool_descriptions(keyboard_tools)}
 
-## Rules
-- You will receive a screenshot of the current screen with each message.
-- Study the screen carefully, then output tool commands to accomplish the task.
-- Each line = one tool command + space-separated arguments.
-- After your commands execute, you'll see the updated screen.
-- Keep issuing commands until the task is done.
-- When the task is complete, output: FINISHED
+## Flow
+1. You receive a text task from the user.
+2. If you need to see the screen, output: screenshot
+3. After receiving the screenshot, output tool commands to perform actions.
+4. After commands execute, you will see the updated screen automatically.
+5. Repeat until the task is done, then output: FINISHED
 
 ## Example
+screenshot
 mouse_goto 500 400
 mouse_left_click
 key_type Hello World
-key_enter"""
+key_enter
+screenshot
+FINISHED"""
 
     messages = [{"role": "system", "content": system_prompt}]
     print("OpenTuter ready. Type your task (or 'exit' to quit).")
@@ -88,16 +95,13 @@ key_enter"""
             break
 
         abort.aborted = False
-        b64 = engine.capture_screen_base64()
-        messages.append({
-            "role": "user",
-            "content": [
-                {"type": "text", "text": user_input},
-                {"type": "image_url", "image_url": {"url": f"data:image/png;base64,{b64}"}}
-            ]
-        })
+        messages.append({"role": "user", "content": user_input})
 
-        while not abort.aborted:
+        max_rounds = 20
+        for _ in range(max_rounds):
+            if abort.aborted:
+                break
+
             try:
                 content = call_llm(messages, client, llm_cfg)
             except Exception as e:
@@ -109,18 +113,30 @@ key_enter"""
             if "FINISHED" in content:
                 break
 
-            for line in content.split("\n"):
+            lines = [l.strip() for l in content.split("\n") if l.strip()]
+
+            if any(l.lower() == "screenshot" for l in lines):
+                b64 = engine.capture_screen_base64(scale=1.0, fmt="PNG")
+                messages.append({
+                    "role": "user",
+                    "content": [
+                        {"type": "text", "text": "Here is the current screen."},
+                        {"type": "image_url", "image_url": {"url": f"data:image/png;base64,{b64}"}}
+                    ]
+                })
+                continue
+
+            for line in lines:
                 if abort.aborted:
                     break
-                line = line.strip()
-                if line:
+                if line.lower() != "screenshot":
                     engine.execute_command(line, mouse_names, keyboard_names, mouse_commands, tools_cfg)
 
             if abort.aborted:
                 break
 
             time.sleep(0.3)
-            b64 = engine.capture_screen_base64()
+            b64 = engine.capture_screen_base64(scale=1.0, fmt="PNG")
             messages.append({
                 "role": "user",
                 "content": [

@@ -89,7 +89,12 @@ def ensure_loaded():
 
         _mouse_commands = engine.load_mouse_commands()
 
-        _system_prompt = f"""You are a desktop automation assistant with real-time screen vision.
+        _system_prompt = f"""You are a desktop automation assistant that controls mouse and keyboard.
+
+## Available Commands
+- **Tool commands** — one per line with space-separated arguments
+- **screenshot** — request a screenshot of the current screen (you will receive the image automatically)
+- **FINISHED** — signal that the task is complete
 
 ## Mouse Tools
 {engine.build_tool_descriptions(_mouse_tools_data)}
@@ -97,18 +102,21 @@ def ensure_loaded():
 ## Keyboard Tools
 {engine.build_tool_descriptions(_keyboard_tools_data)}
 
-## Rules
-- You will receive a screenshot with each message.
-- Output one tool command per line.
-- After commands execute, you'll see the updated screen.
-- Keep going until the task is done.
-- When done, output: FINISHED
+## Flow
+1. You receive a text task from the user.
+2. If you need to see the screen, output: screenshot
+3. After receiving the screenshot, output tool commands to perform actions.
+4. After commands execute, you will see the updated screen automatically.
+5. Repeat until the task is done, then output: FINISHED
 
 ## Example
+screenshot
 mouse_goto 500 400
 mouse_left_click
 key_type Hello World
-key_enter"""
+key_enter
+screenshot
+FINISHED"""
 
         _messages.clear()
         _messages.append({"role": "system", "content": _system_prompt})
@@ -191,35 +199,50 @@ def api_send():
         return jsonify({"error": "empty task"}), 400
 
     with _msg_lock:
-        b64 = engine.capture_screen_base64(scale=1.0, fmt="PNG")
-        _messages.append({
-            "role": "user",
-            "content": [
-                {"type": "text", "text": task},
-                {"type": "image_url", "image_url": {"url": f"data:image/png;base64,{b64}"}}
-            ]
-        })
+        _messages.append({"role": "user", "content": task})
 
-        try:
-            resp = _client.chat.completions.create(
-                model=_llm_cfg["model"],
-                messages=_messages,
-                temperature=_llm_cfg.get("temperature", 0.2),
-            )
-            content = resp.choices[0].message.content
-        except Exception as e:
-            return jsonify({"error": str(e)}), 500
+        max_rounds = 20
+        final_content = ""
+        final_screenshot = ""
 
-        _messages.append({"role": "assistant", "content": content})
+        for _ in range(max_rounds):
+            try:
+                resp = _client.chat.completions.create(
+                    model=_llm_cfg["model"],
+                    messages=_messages,
+                    temperature=_llm_cfg.get("temperature", 0.2),
+                )
+                content = resp.choices[0].message.content
+            except Exception as e:
+                return jsonify({"error": str(e)}), 500
 
-        for line in content.split("\n"):
-            line = line.strip()
-            if line:
-                engine.execute_command(line, _mouse_names, _keyboard_names, _mouse_commands, _tools_cfg)
+            _messages.append({"role": "assistant", "content": content})
 
-        b64_after = engine.capture_screen_base64(scale=1.0, fmt="PNG")
+            if "FINISHED" in content:
+                final_content = content
+                break
 
-        if "FINISHED" not in content:
+            lines = [l.strip() for l in content.split("\n") if l.strip()]
+
+            if any(l.lower() == "screenshot" for l in lines):
+                b64 = engine.capture_screen_base64(scale=1.0, fmt="PNG")
+                _messages.append({
+                    "role": "user",
+                    "content": [
+                        {"type": "text", "text": "Here is the current screen."},
+                        {"type": "image_url", "image_url": {"url": f"data:image/png;base64,{b64}"}}
+                    ]
+                })
+                continue
+
+            for line in lines:
+                if line.lower() != "screenshot":
+                    engine.execute_command(line, _mouse_names, _keyboard_names, _mouse_commands, _tools_cfg)
+
+            b64_after = engine.capture_screen_base64(scale=1.0, fmt="PNG")
+            final_content = content
+            final_screenshot = b64_after
+
             _messages.append({
                 "role": "user",
                 "content": [
@@ -228,7 +251,7 @@ def api_send():
                 ]
             })
 
-    return jsonify({"reply": content, "screenshot": b64_after})
+    return jsonify({"reply": final_content, "screenshot": final_screenshot})
 
 def main():
     app.run(host="0.0.0.0", port=8080, debug=False)
