@@ -11,26 +11,6 @@
 - **First-Run Wizard** — OOBE guides you through API endpoint, model, and key setup
 - **System Hotkeys** — keyboard support for Win, Ctrl, Alt, Shift, Tab, Esc, Enter, etc.
 
-### Project Structure
-
-```
-OpenTuter/
-├── main.py              # Entry point
-├── core.py              # Engine: LLM calls, command exec, screenshot, abort
-├── gui.py               # Terminal interaction loop
-├── config.json          # LLM configuration
-├── agent/
-│   ├── tools.mouse.json
-│   ├── tools.keyboard.json
-│   └── controller/
-│       ├── mouse.py
-│       └── keyboard.py
-├── ugui/
-│   └── oobe.py
-└── res/
-    └── logo.png
-```
-
 ### Dependencies
 
 - Python 3.8+
