@@ -1,6 +1,6 @@
 # Changelog
 
-## v1.0.0 — 2025-01-01
+## 2026.7-beta-1
 
 ### Features
 
