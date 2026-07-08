@@ -50,8 +50,14 @@
 <script>
 document.getElementById('provider').addEventListener('change', function() {
   const urls = {{ providers | tojson }};
+  const keyInput = document.getElementById('api_key');
   if (this.value && urls[this.value] !== undefined) {
     document.getElementById('base_url').value = urls[this.value];
+    if (urls[this.value].includes('localhost') || urls[this.value].includes('127.0.0.1')) {
+      keyInput.value = 'not-needed';
+    } else {
+      keyInput.value = '';
+    }
   }
 });
 
